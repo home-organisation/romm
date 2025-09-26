@@ -74,7 +74,6 @@ jobs:
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image
-        if: steps.build-and-push.outcome.success
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
@@ -98,6 +97,5 @@ jobs:
       # Upload the Snyk results to GitHub Code Scanning
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
-        if: steps.snyk.outcome.success
         with:
           sarif_file: snyk.sarif
