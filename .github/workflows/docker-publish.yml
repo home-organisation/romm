@@ -98,6 +98,12 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           args: --file=Dockerfile --sarif-file-output=snyk.sarif
 
+      # Initialize CodeQL Action
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: '/language:docker'
+
       # Upload the Snyk results to GitHub Code Scanning
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
