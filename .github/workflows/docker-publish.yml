@@ -90,12 +90,6 @@ jobs:
           category: "/language:${{matrix.language}}"
           output: codeql.sarif
 
-      # Upload the codeql results to GitHub Code Scanning
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: codeql.sarif
-          category: codeql
 
   build_and_push:
     runs-on: ubuntu-latest
