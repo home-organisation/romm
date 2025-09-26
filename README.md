@@ -1,2 +1,2 @@
 # romm
-Custom image of tvtime based on rommapp/romm
+Custom image of romm based on rommapp/romm
