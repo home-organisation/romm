@@ -93,7 +93,7 @@ jobs:
 
       # Analyse the built Docker image with Clair and push result to github code scanning
       - name: Save docker image as tarball
-        run: docker save -o image.tar ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
+        run: docker save -o image.tar ${{ steps.meta.outputs.tags }}
 
       - name: Scan image with Clair
         uses: quay/clair-action@main
