@@ -88,11 +88,12 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
+          # Upload the SARIF file for each language as a separate result.
           output: codeQL.sarif
 
       # debug contents of the sarif file
       - name: Debug CodeQL SARIF file
-        run: cat codeQL.sarif
+        run: cat codeQL.sarif/*
 
 
   build:
