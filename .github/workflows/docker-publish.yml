@@ -108,3 +108,4 @@ jobs:
         with:
           sarif_file: snyk.sarif
           category: '/language:docker'
+          matrix: '{"language": "docker", "category": "/language:docker", "build-mode": "none", "runner": "[\"ubuntu-latest\"]" }'
