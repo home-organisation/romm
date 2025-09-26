@@ -1,10 +1,5 @@
 name: Build
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   push:
     branches: [ "main" ]
@@ -12,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY: 'ghcr.io'
   IMAGE_NAME: ${{ github.repository }}
 
 
@@ -98,14 +93,9 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           args: --file=Dockerfile --sarif-file-output=snyk.sarif
 
-      # Debug step to show the generated SARIF file
-      - name: Show SARIF file
-        run: cat snyk.sarif
-
       # Upload the Snyk results to GitHub Code Scanning
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk.sarif
           category: '/language:docker'
-          matrix: ${{ fromJSON('{"language": "docker", "category": "/language:docker"}') }}
