@@ -30,6 +30,25 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
+      # --- lire la version ---
+      - name: Get application version
+        id: read_version
+        run: |
+          # Installer yq pour parser le YAML
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          pip3 install yq
+          
+          if [ -f version.yaml ]; then
+            # Extraire la valeur 'app.version'
+            APP_VERSION=$(yq '.app.version' version.yaml)
+            echo "Version lue: $APP_VERSION"
+            # Exposer la version comme une sortie d'étape
+            echo "APP_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "::error::version.yaml non trouvé ou 'app.version' manquant."
+            exit 1
+          fi
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -61,6 +80,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=raw,value=${{ steps.read_version.outputs.APP_VERSION }}
             type=raw,value=${{ github.event.pull_request.head.sha }}
             
 
