@@ -41,7 +41,7 @@ jobs:
           
           if [ -f version.yaml ]; then
             # Extraire la valeur 'app.version'
-            APP_VERSION=$(yq '.app.version' version.yaml | sed '/"//g')
+            APP_VERSION=$(yq '.app.version' version.yaml | sed '/\"//g')
             echo "Version lue: $APP_VERSION"
             # Exposer la version comme une sortie d'étape
             echo "APP_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
