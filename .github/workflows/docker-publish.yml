@@ -116,7 +116,8 @@ jobs:
     # Le GITHUB_TOKEN a besoin de la permission 'workflows' en 'write'
     permissions:
       contents: read
-      actions: write 
+      actions: write
+    needs: build
     steps:
       - name: Get application product
         id: read_product
