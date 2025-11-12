@@ -119,6 +119,9 @@ jobs:
       actions: write
     needs: build
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Get application product
         id: read_product
         run: |
