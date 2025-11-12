@@ -153,7 +153,7 @@ jobs:
               owner: "${{ github.repository_owner }}", 
               repo: "${{ github.repository_owner }}/${{ steps.read_product.outputs.APP_PRODUCT }}", 
               workflow_id: 'update_image.yml', 
-              ref: "${{ steps.read_product.outputs.APP_VERSION }}"
+              ref: "${{ steps.read_product.outputs.APP_VERSION }}",
               inputs: {
                 "image_name": "ghcr.io/${{ github.repository }}",
                 "new_tag": "${{ github.event.pull_request.head.sha }}",
