@@ -144,10 +144,19 @@ jobs:
             echo "::error::version.yaml non trouvé ou 'app.product' manquant."
             exit 1
           fi
+
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          repositories: ${{ steps.read_product.outputs.APP_PRODUCT }}
           
       - name: Dispatch Workflow
         uses: actions/github-script@v6
         with:
+          github-token: ${{ steps.generate_token.outputs.token }}
           script: |
             github.rest.actions.createWorkflowDispatch({
               owner: "${{ github.repository_owner }}", 
