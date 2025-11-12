@@ -110,3 +110,49 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+  promote:
+    runs-on: ubuntu-latest
+    # Le GITHUB_TOKEN a besoin de la permission 'workflows' en 'write'
+    permissions:
+      contents: read
+      actions: write 
+    steps:
+      - name: Get application product
+        id: read_product
+        run: |
+          # Installer yq pour parser le YAML
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          pip3 install yq
+          
+          if [ -f version.yaml ]; then
+            # Extraire la valeur 'app.version'
+            APP_VERSION=$(yq '.app.version' version.yaml | sed 's/"//g')
+            echo "Version lue: $APP_VERSION"
+            
+            # Extraire la valeur 'app.product'
+            APP_PRODUCT=$(yq '.app.product' version.yaml | sed 's/"//g')
+            echo "Product lue: $APP_PRODUCT"
+            # Exposer la version comme une sortie d'étape
+            echo "APP_PRODUCT=$APP_PRODUCT" >> $GITHUB_OUTPUT
+            echo "APP_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "::error::version.yaml non trouvé ou 'app.product' manquant."
+            exit 1
+          fi
+          
+      - name: Dispatch Workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: "${{ github.repository_owner }}", 
+              repo: "${{ github.repository_owner }}/${{ steps.read_product.outputs.APP_PRODUCT }}", 
+              workflow_id: 'update_image.yml', 
+              ref: "${{ steps.read_product.outputs.APP_VERSION }}"
+              inputs: {
+                "image_name": "ghcr.io/${{ github.repository }}",
+                "new_tag": "${{ github.event.pull_request.head.sha }}",
+                "jira_issue": "${{ github.event.pull_request.head.ref }}"
+              }
+            })
